@@ -24,6 +24,7 @@
       <modal :is-opened.sync="openedDelete">
         <div class="modal-content">
           <h4>delete</h4>
+          <h4>delete</h4>
           <p v-for="title in selectTiles" track-by="$index">{{ title }}</p>
           <div class="modal-footer">
             <div class="btn btn-flat" @click="closeDelete">cancel</div>
@@ -50,8 +51,8 @@
           <div class="modal-footer">
             <div class="btn btn-flat" @click="close">cancel</div>
             <div class="btn btn-flat" @click="addTask">ok</div>
-            <div class="btn btn-flat" @click="recode" v-show="recordFlag">recode</div>
-            <div class="btn btn-flat" @click="endRecode" v-else>end recode</div>
+            <div class="btn btn-flat" @click="record" v-show="recordFlag">record</div>
+            <div class="btn btn-flat" @click="endRecord" v-else>end record</div>
           </div>
         </div>
       </modal>
@@ -61,6 +62,21 @@
 
 <script>
 import Task from './Task.vue';
+
+const communicateBM = ( path , arg , successHandler ) => {
+  $.ajax({
+        type : 'post',
+		url : 'https://softuken2016.mybluemix.net/todo/' + path,
+        data : JSON.stringify(arg),
+        contentType: 'application/JSON',
+        dataType : 'json',
+        scriptCharset: 'utf-8'
+  }).done(successHandler
+  ).fail(function(data){
+    console.log('error:'+JSON.stringify(data));
+  });
+}
+
 export default {
   data () {
     return {
@@ -69,14 +85,14 @@ export default {
       // preserves its current state and we are modifying
       // its initial state.
       msg: 'TODO',
-      speech : webkitSpeechRecognition,
+//      speech : webkitSpeechRecognition,
       recordFlag : true,
       opened : false,
       openedSuccess : false,
       openedDelete : false,
       taskDatas : [
-        {title:'task1', body:"body1",select:false},
-        {title:'task2', body:"body2",select:false},
+        {title:'task1', body:"body1", select:false, category:"shopping", location:"スーパー"},
+        {title:'task2', body:"body2", select:false, category:"shopping", location:"駅"}
       ],
       taskTitle : '',
       taskBody : ''
@@ -88,11 +104,17 @@ export default {
     }
   },
   ready (){
-      this.speech = new webkitSpeechRecognition();
+/*      this.speech = new webkitSpeechRecognition();
       this.speech.lang = "ja";
       this.speech.addEventListener('result', (e)=>{
           this.taskTitle = e.results[0][0].transcript;
       });
+*/
+    // get todo list from server
+    var noArg = {};
+    communicateBM('list',noArg,(data)=>{
+        this.taskDatas = data;
+    });
   },
   methods : {
     addTask (){
@@ -105,13 +127,13 @@ export default {
       this.taskBody = '';
       this.opened = false;
     },
-    recode (){
+    record (){
       //音声認識APIの使用
       //言語を日本語に設定
       this.speech.start();
       this.recordFlag = false;
     },
-    endRecode (){
+    endRecord (){
       this.speech.stop();
       this.recordFlag = true;
     },
