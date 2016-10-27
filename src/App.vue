@@ -62,6 +62,9 @@
 <script>
 import Task from './Task.vue';
 export default {
+  ready() {
+    $(()=>console.log('hellow'));
+  },
   data () {
     return {
       // note: changing this line won't causes changes
@@ -75,8 +78,8 @@ export default {
       openedSuccess : false,
       openedDelete : false,
       taskDatas : [
-        {title:'task1', body:"body1",select:false},
-        {title:'task2', body:"body2",select:false},
+        {title:'task1', body:"body1", select:false, category:"shopping", location:"スーパー"},
+        {title:'task2', body:"body2", select:false, category:"shopping", location:"駅"}
       ],
       taskTitle : '',
       taskBody : ''
