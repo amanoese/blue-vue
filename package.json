@@ -3,13 +3,17 @@
   "description": "app.js",
   "author": "amanoese <amanoese@gmail.com>",
   "scripts": {
-    "dev": "webpack-dev-server --inline --hot --port 3000",
-    "public": "webpack-dev-server --inline --hot --https --host 192.168.100.100 --port 3000",
+    "dev": "npm-run-all -p dev:*",
+    "dev:server": "node proxy-server.js",
+    "dev:webpack": "webpack-dev-server --inline --hot --port 3000 --https",
+    "public": "npm-run-all -p dev:server public:webpack",
+    "public:webpack": "webpack-dev-server --inline --hot --https --host 192.168.100.100 --port 3000",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "babel-runtime": "^6.0.0",
     "vue": "^1.0.0",
-    "babel-runtime": "^6.0.0"
+    "vue-resource": "^1.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
@@ -20,16 +24,22 @@
     "babel-preset-stage-2": "^6.0.0",
     "cross-env": "^1.0.6",
     "css-loader": "^0.23.1",
+    "express": "^4.14.0",
     "file-loader": "^0.8.5",
+    "jquery": "^3.1.1",
     "json-loader": "^0.5.4",
     "node-sass": "^3.10.1",
+    "npm-run-all": "^3.1.1",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
+    "superagent": "^2.3.0",
     "url-loader": "^0.5.7",
+    "vue-google-maps": "^0.1.21",
     "vue-hot-reload-api": "^1.2.0",
     "vue-html-loader": "^1.0.0",
     "vue-loader": "^8.2.1",
     "vue-materialize": "^0.4.1",
+    "vue-router": "^0.7.13",
     "vue-style-loader": "^1.0.0",
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.0"

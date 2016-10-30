@@ -45,9 +45,21 @@ module.exports = {
       { test: /\.scss$/, loader: "style!css!sass?sourceMap"}
     ]
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+        $: "jquery",
+        jQuery: "jquery"
+    })
+  ],
   devServer: {
     historyApiFallback: true,
-    noInfo: true
+    noInfo: true,
+    proxy: {
+      '/todo/list': {
+        target: 'http://localhost:3030',
+        changeOrigin : true
+      }
+    }
   },
   devtool: '#eval-source-map'
 }

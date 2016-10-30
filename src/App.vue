@@ -24,6 +24,7 @@
       <modal :is-opened.sync="openedDelete">
         <div class="modal-content">
           <h4>delete</h4>
+          <h4>delete</h4>
           <p v-for="title in selectTiles" track-by="$index">{{ title }}</p>
           <div class="modal-footer">
             <div class="btn btn-flat" @click="closeDelete">cancel</div>
@@ -50,8 +51,8 @@
           <div class="modal-footer">
             <div class="btn btn-flat" @click="close">cancel</div>
             <div class="btn btn-flat" @click="addTask">ok</div>
-            <div class="btn btn-flat" @click="recode" v-show="recordFlag">recode</div>
-            <div class="btn btn-flat" @click="endRecode" v-else>end recode</div>
+            <div class="btn btn-flat" @click="record" v-show="recordFlag">record</div>
+            <div class="btn btn-flat" @click="endRecord" v-else>end record</div>
           </div>
         </div>
       </modal>
@@ -61,6 +62,7 @@
 
 <script>
 import Task from './Task.vue';
+
 export default {
   data () {
     return {
@@ -75,8 +77,8 @@ export default {
       openedSuccess : false,
       openedDelete : false,
       taskDatas : [
-        {title:'task1', body:"body1",select:false},
-        {title:'task2', body:"body2",select:false},
+        {title:'task1', body:"body1", select:false, category:"shopping", location:"スーパー"},
+        {title:'task2', body:"body2", select:false, category:"shopping", location:"駅"}
       ],
       taskTitle : '',
       taskBody : ''
@@ -87,10 +89,17 @@ export default {
       return this.taskDatas.filter(x=>x.select).map(x=>x.title);
     }
   },
-  watch : {
-    taskDatas (){
-      window.localStorage.setItem('_taskDatas',JSON.stringify(this.taskDatas));
-    }
+  created () {
+    // get todo list from server
+    this.$http.post('/todo/list','{}')
+    .then(response=>response.json())
+    .then(json=>{
+      console.log(JSON.stringify(json,null,'\t'));
+      this.taskDatas = json.map(x=>Object.assign(x,{
+        title : x.todoText,
+        regDate:x.regDate.replace(/\//g,'-')
+      }));
+    })
   },
   ready (){
       this.taskDatas = JSON.parse(window.localStorage.getItem('_taskDatas')) || this.taskDatas;
@@ -111,13 +120,13 @@ export default {
       this.taskBody = '';
       this.opened = false;
     },
-    recode (){
+    record (){
       //音声認識APIの使用
       //言語を日本語に設定
       this.speech.start();
       this.recordFlag = false;
     },
-    endRecode (){
+    endRecord (){
       this.speech.stop();
       this.recordFlag = true;
     },
