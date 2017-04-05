@@ -11,7 +11,8 @@ Vue.use(VueResource);
 
 let router = new VueRouter({
   hashbang: false,
-  history: true
+  history: true,
+  root : '/todo'
 });
 
 router.map({
