@@ -18,6 +18,13 @@ npm run build
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 ## deploy
+downloading for http-sample project.
+unzip file to project root.
+``` bash
+wget https://console.ng.bluemix.net/rest/appa/<your project id>/starter-download
+unzip http-sample.zip -d http-sample
+```
+
 Please login if you are not logged in to cf.
 ``` bash
 # login cf
